@@ -13,6 +13,8 @@ Automated web scraper for the [Mohave County Assessor's Affidavit of Value Searc
 
 **Features:**
 - Scrapes affidavit data for book numbers 100-410
+- Filters by Property Type: Vacant Land
+- Date range filtering: 01/01/2010 to 10/31/2025
 - Saves individual and combined CSV files
 - Comprehensive logging and error handling
 - Google Drive upload capability

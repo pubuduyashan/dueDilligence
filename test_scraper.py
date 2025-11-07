@@ -19,6 +19,7 @@ def main():
     print("Testing Mohave Scraper")
     print("="*60)
     print("This will test scraping books 100-102")
+    print("Property type: Vacant Land")
     print("Date range: 01/01/2010 to 10/31/2025")
     print("="*60 + "\n")
 
@@ -26,7 +27,8 @@ def main():
     scraper = MohaveScraper(
         output_dir='test_output',
         from_date='01/01/2010',
-        to_date='10/31/2025'
+        to_date='10/31/2025',
+        property_type='Vacant Land'
     )
 
     # Test with just 3 book numbers

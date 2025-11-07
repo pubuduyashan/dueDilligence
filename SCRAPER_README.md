@@ -1,11 +1,12 @@
 # Mohave County Assessor - Affidavit of Value Scraper
 
-This scraper extracts data from the [Mohave County Assessor's Affidavit of Value Search page](https://www.mohave.gov/departments/assessor/affidavit-of-value-search/) for book numbers 100-410 with a date range of 01/01/2010 to 10/31/2025.
+This scraper extracts data from the [Mohave County Assessor's Affidavit of Value Search page](https://www.mohave.gov/departments/assessor/affidavit-of-value-search/) for book numbers 100-410 with a date range of 01/01/2010 to 10/31/2025, filtered for Vacant Land properties.
 
 ## Features
 
 - Automated scraping using Selenium WebDriver
 - Scrapes data for book numbers 100-410
+- Property Type filtering: Vacant Land
 - Date range filtering: 01/01/2010 to 10/31/2025
 - Saves individual CSV files for each book
 - Creates a combined CSV file with all data
@@ -37,14 +38,16 @@ python mohave_scraper.py
 ```python
 from mohave_scraper import MohaveScraper
 
-# Initialize scraper with default dates (01/01/2010 to 10/31/2025)
+# Initialize scraper with defaults
+# (Property Type: Vacant Land, Date range: 01/01/2010 to 10/31/2025)
 scraper = MohaveScraper(output_dir='scraped_data')
 
-# Or specify custom date range
+# Or specify custom parameters
 scraper = MohaveScraper(
     output_dir='scraped_data',
     from_date='01/01/2010',
-    to_date='10/31/2025'
+    to_date='10/31/2025',
+    property_type='Vacant Land'
 )
 
 # Scrape a range of books
@@ -59,13 +62,26 @@ scraper.create_combined_file()
 ```python
 from mohave_scraper import MohaveScraper
 
-# With custom date range
+# With custom parameters
 scraper = MohaveScraper(
     from_date='01/01/2015',
-    to_date='12/31/2020'
+    to_date='12/31/2020',
+    property_type='Vacant Land'
 )
 # Scrape books 100-150 only
 scraper.scrape_range(start=100, end=150)
+```
+
+### Use a different property type
+
+```python
+from mohave_scraper import MohaveScraper
+
+# Change property type (e.g., 'Residential', 'Commercial', etc.)
+scraper = MohaveScraper(
+    property_type='Residential'  # Change as needed
+)
+scraper.scrape_range(start=100, end=410)
 ```
 
 ## Output
@@ -147,7 +163,8 @@ The script includes user-agent spoofing. If still blocked, try:
 - The scraper is designed to be "polite" with 2-second delays between requests
 - Progress is logged every 10 books
 - Failed scrapes are logged and counted but don't stop the process
-- Each book's data includes metadata (book_number, date range, scraped_at timestamp)
+- Each book's data includes metadata (book_number, property_type, date range, scraped_at timestamp)
+- Default property type is "Vacant Land" but can be customized
 - Default date range is 01/01/2010 to 10/31/2025 but can be customized
 
 ## Data Structure
@@ -155,6 +172,7 @@ The script includes user-agent spoofing. If still blocked, try:
 Each CSV file contains:
 - Original table columns from the website
 - `book_number`: The book number searched
+- `property_type`: The property type filter used (default: "Vacant Land")
 - `from_date`: Start date of the search range
 - `to_date`: End date of the search range
 - `scraped_at`: ISO timestamp of when data was scraped

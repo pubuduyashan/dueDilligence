@@ -2,6 +2,7 @@
 """
 Mohave County Assessor - Affidavit of Value Search Scraper
 Scrapes data for book numbers 100-410 with date range 01/01/2010 to 10/31/2025
+Filters by Property Type: Vacant Land
 """
 
 import os
@@ -13,6 +14,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
@@ -33,17 +35,19 @@ logger = logging.getLogger(__name__)
 class MohaveScraper:
     """Scraper for Mohave County Affidavit of Value Search"""
 
-    def __init__(self, output_dir='scraped_data', from_date='01/01/2010', to_date='10/31/2025'):
+    def __init__(self, output_dir='scraped_data', from_date='01/01/2010', to_date='10/31/2025', property_type='Vacant Land'):
         self.url = 'https://www.mohave.gov/departments/assessor/affidavit-of-value-search/'
         self.output_dir = output_dir
         self.from_date = from_date
         self.to_date = to_date
+        self.property_type = property_type
         self.driver = None
 
         # Create output directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
         logger.info(f"Output directory: {self.output_dir}")
         logger.info(f"Date range: {self.from_date} to {self.to_date}")
+        logger.info(f"Property type: {self.property_type}")
 
     def setup_driver(self):
         """Initialize Chrome WebDriver with appropriate options"""
@@ -119,6 +123,25 @@ class MohaveScraper:
                 except NoSuchElementException:
                     logger.warning("No 'to date' field found, continuing without it")
 
+            # Find and select property type from Property Type Code dropdown
+            try:
+                # Try by name attribute first
+                property_type_dropdown = self.driver.find_element(By.NAME, 'propertyTypeCode')
+                select = Select(property_type_dropdown)
+                select.select_by_visible_text(self.property_type)
+                logger.info(f"Selected '{self.property_type}' from Property Type Code dropdown")
+            except NoSuchElementException:
+                try:
+                    # Try by id
+                    property_type_dropdown = self.driver.find_element(By.ID, 'propertyTypeCode')
+                    select = Select(property_type_dropdown)
+                    select.select_by_visible_text(self.property_type)
+                    logger.info(f"Selected '{self.property_type}' from Property Type Code dropdown")
+                except NoSuchElementException:
+                    logger.warning("No 'Property Type Code' dropdown found, continuing without it")
+            except Exception as e:
+                logger.warning(f"Could not select property type '{self.property_type}': {e}")
+
             # Find the book input field - trying multiple possible selectors
             try:
                 # Try by name attribute
@@ -175,6 +198,7 @@ class MohaveScraper:
 
             # Add metadata columns
             df['book_number'] = book_number
+            df['property_type'] = self.property_type
             df['from_date'] = self.from_date
             df['to_date'] = self.to_date
             df['scraped_at'] = datetime.now().isoformat()
@@ -284,7 +308,8 @@ def main():
     scraper = MohaveScraper(
         output_dir='scraped_data',
         from_date='01/01/2010',
-        to_date='10/31/2025'
+        to_date='10/31/2025',
+        property_type='Vacant Land'
     )
 
     # Scrape books 100-410
@@ -298,6 +323,7 @@ def main():
     print("="*50)
     print(f"Successfully scraped: {success} books")
     print(f"Failed to scrape: {failed} books")
+    print(f"Property type: {scraper.property_type}")
     print(f"Date range: {scraper.from_date} to {scraper.to_date}")
     print(f"Output directory: {scraper.output_dir}")
     print("="*50)
