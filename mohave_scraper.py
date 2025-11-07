@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Mohave County Assessor - Affidavit of Value Search Scraper
-Scrapes data for book numbers 100-410
+Scrapes data for book numbers 100-410 with date range 01/01/2010 to 10/31/2025
 """
 
 import os
@@ -33,14 +33,17 @@ logger = logging.getLogger(__name__)
 class MohaveScraper:
     """Scraper for Mohave County Affidavit of Value Search"""
 
-    def __init__(self, output_dir='scraped_data'):
+    def __init__(self, output_dir='scraped_data', from_date='01/01/2010', to_date='10/31/2025'):
         self.url = 'https://www.mohave.gov/departments/assessor/affidavit-of-value-search/'
         self.output_dir = output_dir
+        self.from_date = from_date
+        self.to_date = to_date
         self.driver = None
 
         # Create output directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
         logger.info(f"Output directory: {self.output_dir}")
+        logger.info(f"Date range: {self.from_date} to {self.to_date}")
 
     def setup_driver(self):
         """Initialize Chrome WebDriver with appropriate options"""
@@ -82,6 +85,39 @@ class MohaveScraper:
 
             # Wait for page to load
             time.sleep(2)
+
+            # Find and fill the FROM date field
+            try:
+                from_date_input = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.NAME, 'fromDate'))
+                )
+                from_date_input.clear()
+                from_date_input.send_keys(self.from_date)
+                logger.info(f"Entered from date: {self.from_date}")
+            except (TimeoutException, NoSuchElementException) as e:
+                logger.warning(f"Could not find 'fromDate' field, trying alternatives: {e}")
+                try:
+                    # Try by id or other attributes
+                    from_date_input = self.driver.find_element(By.ID, 'fromDate')
+                    from_date_input.clear()
+                    from_date_input.send_keys(self.from_date)
+                except NoSuchElementException:
+                    logger.warning("No 'from date' field found, continuing without it")
+
+            # Find and fill the TO date field
+            try:
+                to_date_input = self.driver.find_element(By.NAME, 'toDate')
+                to_date_input.clear()
+                to_date_input.send_keys(self.to_date)
+                logger.info(f"Entered to date: {self.to_date}")
+            except NoSuchElementException:
+                try:
+                    # Try by id or other attributes
+                    to_date_input = self.driver.find_element(By.ID, 'toDate')
+                    to_date_input.clear()
+                    to_date_input.send_keys(self.to_date)
+                except NoSuchElementException:
+                    logger.warning("No 'to date' field found, continuing without it")
 
             # Find the book input field - trying multiple possible selectors
             try:
@@ -139,6 +175,8 @@ class MohaveScraper:
 
             # Add metadata columns
             df['book_number'] = book_number
+            df['from_date'] = self.from_date
+            df['to_date'] = self.to_date
             df['scraped_at'] = datetime.now().isoformat()
 
             logger.info(f"Successfully scraped {len(df)} rows for book {book_number}")
@@ -243,7 +281,11 @@ class MohaveScraper:
 
 def main():
     """Main execution function"""
-    scraper = MohaveScraper(output_dir='scraped_data')
+    scraper = MohaveScraper(
+        output_dir='scraped_data',
+        from_date='01/01/2010',
+        to_date='10/31/2025'
+    )
 
     # Scrape books 100-410
     success, failed = scraper.scrape_range(start=100, end=410)
@@ -256,6 +298,7 @@ def main():
     print("="*50)
     print(f"Successfully scraped: {success} books")
     print(f"Failed to scrape: {failed} books")
+    print(f"Date range: {scraper.from_date} to {scraper.to_date}")
     print(f"Output directory: {scraper.output_dir}")
     print("="*50)
 

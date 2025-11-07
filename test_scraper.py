@@ -19,10 +19,15 @@ def main():
     print("Testing Mohave Scraper")
     print("="*60)
     print("This will test scraping books 100-102")
+    print("Date range: 01/01/2010 to 10/31/2025")
     print("="*60 + "\n")
 
     # Initialize scraper with test output directory
-    scraper = MohaveScraper(output_dir='test_output')
+    scraper = MohaveScraper(
+        output_dir='test_output',
+        from_date='01/01/2010',
+        to_date='10/31/2025'
+    )
 
     # Test with just 3 book numbers
     success, failed = scraper.scrape_range(start=100, end=102)

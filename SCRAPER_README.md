@@ -1,11 +1,12 @@
 # Mohave County Assessor - Affidavit of Value Scraper
 
-This scraper extracts data from the [Mohave County Assessor's Affidavit of Value Search page](https://www.mohave.gov/departments/assessor/affidavit-of-value-search/) for book numbers 100-410.
+This scraper extracts data from the [Mohave County Assessor's Affidavit of Value Search page](https://www.mohave.gov/departments/assessor/affidavit-of-value-search/) for book numbers 100-410 with a date range of 01/01/2010 to 10/31/2025.
 
 ## Features
 
 - Automated scraping using Selenium WebDriver
 - Scrapes data for book numbers 100-410
+- Date range filtering: 01/01/2010 to 10/31/2025
 - Saves individual CSV files for each book
 - Creates a combined CSV file with all data
 - Comprehensive logging and error handling
@@ -36,8 +37,15 @@ python mohave_scraper.py
 ```python
 from mohave_scraper import MohaveScraper
 
-# Initialize scraper
+# Initialize scraper with default dates (01/01/2010 to 10/31/2025)
 scraper = MohaveScraper(output_dir='scraped_data')
+
+# Or specify custom date range
+scraper = MohaveScraper(
+    output_dir='scraped_data',
+    from_date='01/01/2010',
+    to_date='10/31/2025'
+)
 
 # Scrape a range of books
 success, failed = scraper.scrape_range(start=100, end=410)
@@ -51,7 +59,11 @@ scraper.create_combined_file()
 ```python
 from mohave_scraper import MohaveScraper
 
-scraper = MohaveScraper()
+# With custom date range
+scraper = MohaveScraper(
+    from_date='01/01/2015',
+    to_date='12/31/2020'
+)
 # Scrape books 100-150 only
 scraper.scrape_range(start=100, end=150)
 ```
@@ -135,13 +147,16 @@ The script includes user-agent spoofing. If still blocked, try:
 - The scraper is designed to be "polite" with 2-second delays between requests
 - Progress is logged every 10 books
 - Failed scrapes are logged and counted but don't stop the process
-- Each book's data includes metadata (book_number, scraped_at timestamp)
+- Each book's data includes metadata (book_number, date range, scraped_at timestamp)
+- Default date range is 01/01/2010 to 10/31/2025 but can be customized
 
 ## Data Structure
 
 Each CSV file contains:
 - Original table columns from the website
 - `book_number`: The book number searched
+- `from_date`: Start date of the search range
+- `to_date`: End date of the search range
 - `scraped_at`: ISO timestamp of when data was scraped
 
 ## License
