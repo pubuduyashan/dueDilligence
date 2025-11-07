@@ -56,3 +56,8 @@ Thumbs.db
 # Chrome driver
 chromedriver
 chromedriver.exe
+
+# Inspection output
+page_source.html
+form_screenshot.png
+test_output/
