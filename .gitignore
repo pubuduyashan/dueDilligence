@@ -56,3 +56,10 @@ Thumbs.db
 # Chrome driver
 chromedriver
 chromedriver.exe
+chromedriver-win64/
+
+# Debug files
+debug_*.html
+debug_*.py
+test_output/
+test_all_types/
