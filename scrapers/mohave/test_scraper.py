@@ -4,7 +4,7 @@ Test script for Mohave scraper
 Tests with just a few book numbers (100-102) to verify functionality
 """
 
-from mohave_scraper import MohaveScraper
+from scraper import MohaveScraper
 import logging
 
 # Configure logging
@@ -25,7 +25,7 @@ def main():
 
     # Initialize scraper with test output directory
     scraper = MohaveScraper(
-        output_dir='test_output',
+        output_dir='../../data/raw/mohave/test_output',
         from_date='01/01/2010',
         to_date='10/31/2025',
         property_type='Vacant Land'

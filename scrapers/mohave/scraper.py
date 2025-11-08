@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 class MohaveScraper:
     """Scraper for Mohave County Affidavit of Value Search"""
 
-    def __init__(self, output_dir='scraped_data', from_date='01/01/2010', to_date='10/31/2025', property_type='Vacant Land'):
+    def __init__(self, output_dir='../../data/raw/mohave', from_date='01/01/2010', to_date='10/31/2025', property_type='Vacant Land'):
         self.url = 'https://www.mohave.gov/departments/assessor/affidavit-of-value-search/'
         self.output_dir = output_dir
         self.from_date = from_date
@@ -483,7 +483,7 @@ class MohaveScraper:
 def main():
     """Main execution function"""
     scraper = MohaveScraper(
-        output_dir='scraped_data',
+        output_dir='../../data/raw/mohave',
         from_date='01/01/2010',
         to_date='10/31/2025',
         property_type='Vacant Land'

@@ -1,66 +1,118 @@
 # dueDilligence
-An AI automated land due diligence tool
 
-## Project Overview
+**AI-Powered Land Due Diligence Platform**
 
-This project contains tools for automating land due diligence research, including web scraping for property records and assessments.
+An intelligent automation platform for land investment research and analysis, combining data acquisition, processing, and AI-driven insights.
 
-## Current Features
+## 🎯 Vision
 
-### Mohave County Assessor Scraper
+Transform land due diligence from a manual, time-consuming process into an automated, AI-powered workflow that provides comprehensive insights for informed investment decisions.
 
-Automated web scraper for the [Mohave County Assessor's Affidavit of Value Search](https://www.mohave.gov/departments/assessor/affidavit-of-value-search/).
+## 🏗️ Project Structure
 
-**Features:**
-- Scrapes affidavit data for book numbers 100-410
-- Filters by Property Type: Vacant Land
-- Date range filtering: 01/01/2010 to 10/31/2025
-- Saves individual and combined CSV files
-- Comprehensive logging and error handling
-- Google Drive upload capability
+```
+dueDilligence/
+├── scrapers/          # Data Acquisition
+│   └── mohave/        # Mohave County scraper
+├── data/              # Data Storage
+│   ├── raw/           # Raw scraped data
+│   └── processed/     # Cleaned data (future)
+├── analysis/          # AI Analysis (future)
+├── utils/             # Shared utilities
+├── docs/              # Documentation
+└── tests/             # Testing suite
+```
 
-**Quick Start:**
+## 🚀 Current Features
+
+### Data Acquisition
+- **Mohave County Scraper**: Automated scraping of property sales data
+  - 55,000+ vacant land records collected
+  - Full pagination support
+  - Date range: 01/01/2010 to 10/31/2025
+  - See [scrapers/mohave/README.md](scrapers/mohave/README.md)
+
+## 🔮 Planned Features
+
+### AI Analysis (Coming Soon)
+- Market trend analysis and predictions
+- Automated risk assessment
+- Comparable property analysis
+- Investment scoring and recommendations
+- Natural language due diligence reports
+
+### Additional Data Sources
+- Multiple county assessor websites
+- Public land records
+- Market data integration
+- Environmental data
+
+## 📊 Quick Start
+
+### Prerequisites
+- Python 3.8+
+- Chrome/Chromium browser
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/pubuduyashan/dueDilligence.git
+cd dueDilligence
+
 # Install dependencies
 pip install -r requirements.txt
+```
 
-# Test the scraper (books 100-102)
+### Run Mohave County Scraper
+
+```bash
+# Test with 3 books
+cd scrapers/mohave
 python test_scraper.py
 
-# Run full scraper (books 100-410)
-python mohave_scraper.py
-
-# Upload to Google Drive (requires setup)
-python upload_to_drive.py
+# Run full scraper (311 books)
+python scraper.py
 ```
 
-**Documentation:**
-- See [SCRAPER_README.md](SCRAPER_README.md) for detailed usage instructions
-- See [upload_to_drive.py](upload_to_drive.py) for Google Drive integration
+Data will be saved to `data/raw/mohave/`
 
-## Project Structure
+## 📁 Data
 
-```
-.
-├── mohave_scraper.py       # Main scraper script
-├── test_scraper.py         # Test script for validation
-├── upload_to_drive.py      # Google Drive upload helper
-├── requirements.txt        # Python dependencies
-├── SCRAPER_README.md       # Detailed scraper documentation
-└── scraped_data/          # Output directory (created on first run)
-```
+Current dataset: **55,072 vacant land sales records** from Mohave County
 
-## Requirements
+Each record includes:
+- Sale Parcel ID
+- Associated Parcels
+- Property Type
+- Reception Number
+- Sale Price
+- Sale Date
+- Book Number
+- Timestamp
 
-- Python 3.8+
-- Chrome/Chromium browser (auto-installed via webdriver-manager)
-- See requirements.txt for Python packages
+## 🛠️ Tech Stack
 
-## Contributing
+- **Python 3.12**
+- **Selenium**: Web automation
+- **BeautifulSoup4**: HTML parsing
+- **Pandas**: Data processing
+- **Future**: AI/ML frameworks for analysis
 
-This is an automated land research tool. Please ensure compliance with website terms of service when scraping.
+## 📖 Documentation
 
-## License
+- [Scraper Guide](docs/scraper_guide.md) - Detailed scraping documentation
+- [Data Structure](data/README.md) - Data organization
+- [Analysis Module](analysis/README.md) - AI features (coming soon)
+
+## 🤝 Contributing
+
+This project is under active development. More modules and features coming soon!
+
+## 📝 License
 
 For educational and authorized use only.
+
+---
+
+**🤖 Built with AI assistance from [Claude Code](https://claude.com/claude-code)**
