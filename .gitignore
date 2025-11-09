@@ -61,3 +61,5 @@ chromedriver.exe
 page_source.html
 form_screenshot.png
 test_output/
+assessor_search_page_source.html
+assessor_search_screenshot.png
